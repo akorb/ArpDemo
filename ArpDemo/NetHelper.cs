@@ -10,9 +10,8 @@ namespace GetMacByIp
 {
 	public static class NetHelper
 	{
-		public static String GetMacAddress(String targetAddress)
+		public static String GetMacAddress(LivePacketDevice device, String targetAddress)
 		{
-			LivePacketDevice device = LivePacketDevice.AllLocalMachine[1];
 			DeviceAddress address = device.Addresses[1];
 
 			NetworkInterface currentInterface = NetworkInterface.GetAllNetworkInterfaces().First(x => x.OperationalStatus == OperationalStatus.Up);
