@@ -21,6 +21,9 @@ namespace GetMacByIp
 
 		static LivePacketDevice GetActivePacketDevice()
 		{
+			if (LivePacketDevice.AllLocalMachine.Count == 1)
+				return LivePacketDevice.AllLocalMachine[0];
+
 			String input;
 			int result;
 			do
