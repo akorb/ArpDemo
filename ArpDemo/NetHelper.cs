@@ -14,7 +14,7 @@ namespace GetMacByIp
 		{
 			DeviceAddress address = device.Addresses[1];
 
-			NetworkInterface currentInterface = NetworkInterface.GetAllNetworkInterfaces().First(x => x.OperationalStatus == OperationalStatus.Up);
+			NetworkInterface currentInterface = NetworkInterface.GetAllNetworkInterfaces().First(x => x.OperationalStatus == OperationalStatus.Up && x.NetworkInterfaceType != NetworkInterfaceType.Loopback);
 			byte[] mac = currentInterface.GetPhysicalAddress().GetAddressBytes();
 			byte[] ipSender = currentInterface.GetIPProperties().UnicastAddresses.First(x => x.PrefixLength == 24).Address.GetAddressBytes();
 			byte[] ipTarget = targetAddress.Split('.').Select(x => byte.Parse(x)).ToArray();
