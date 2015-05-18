@@ -1,7 +1,7 @@
 ﻿using PcapDotNet.Core;
 using System;
 
-namespace GetMacByIp
+namespace ArpDemo
 {
 	class Program
 	{

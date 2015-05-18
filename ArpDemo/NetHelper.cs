@@ -6,18 +6,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 
-namespace GetMacByIp
+namespace ArpDemo
 {
 	public static class NetHelper
 	{
 		public static String GetMacAddress(LivePacketDevice device, String targetAddress)
 		{
-			DeviceAddress address = device.Addresses[1];
-
 			NetworkInterface currentInterface = NetworkInterface.GetAllNetworkInterfaces().First(x => x.OperationalStatus == OperationalStatus.Up && x.NetworkInterfaceType != NetworkInterfaceType.Loopback);
 			byte[] mac = currentInterface.GetPhysicalAddress().GetAddressBytes();
 			byte[] ipSender = currentInterface.GetIPProperties().UnicastAddresses.First(x => x.PrefixLength == 24).Address.GetAddressBytes();
-			byte[] ipTarget = targetAddress.Split('.').Select(x => byte.Parse(x)).ToArray();
+			byte[] ipTarget = targetAddress.Split('.').Select(byte.Parse).ToArray();
 
 			byte[] arpData = new byte[28];
 			// HRD
@@ -88,8 +86,6 @@ namespace GetMacByIp
 
 			Packet pkt = new Packet(fullPacketData.ToArray(), DateTime.Now, DataLinkKind.Ethernet);
 
-			String tmp = currentInterface.GetIPProperties().UnicastAddresses.First(x => x.PrefixLength == 24).Address.ToString();
-
 			PacketCommunicator connection = device.Open(65536, PacketDeviceOpenAttributes.None, 100);
 			connection.SetFilter("arp and ether dst " + macAsText + " and src host " + targetAddress);
 			connection.SendPacket(pkt);
@@ -97,9 +93,9 @@ namespace GetMacByIp
 			Stopwatch watch = Stopwatch.StartNew();
 
 			// Retrieve the packets
-			Packet packet;
 			do
 			{
+				Packet packet;
 				PacketCommunicatorReceiveResult result = connection.ReceivePacket(out packet);
 				switch (result)
 				{
