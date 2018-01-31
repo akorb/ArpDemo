@@ -1,4 +1,5 @@
-ArpDemo/bin
-ArpDemo/obj
-*.suo
-packages
+/.vs/
+/ArpDemo/bin/
+/ArpDemo/obj/
+/*.suo
+/packages/
