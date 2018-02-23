@@ -1,20 +1,22 @@
 ﻿using PcapDotNet.Core;
+using PcapDotNet.Core.Extensions;
 using PcapDotNet.Packets;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 
 namespace ArpDemo
 {
     public static class NetHelper
     {
-        public static String GetMacAddress(LivePacketDevice device, String targetAddress)
+        public static string GetMacAddress(LivePacketDevice device, string targetAddress)
         {
-            NetworkInterface currentInterface = NetworkInterface.GetAllNetworkInterfaces().First(x => x.OperationalStatus == OperationalStatus.Up && x.NetworkInterfaceType != NetworkInterfaceType.Loopback);
+            NetworkInterface currentInterface = device.GetNetworkInterface();
             byte[] mac = currentInterface.GetPhysicalAddress().GetAddressBytes();
             byte[] ipSender = currentInterface.GetIPProperties().UnicastAddresses.First(x => x.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).Address.GetAddressBytes();
-            byte[] ipTarget = targetAddress.Split('.').Select(byte.Parse).ToArray();
+            byte[] ipTarget = IPAddress.Parse(targetAddress).GetAddressBytes();
 
             // 14 bytes: Ethernet header
             // 28 bytes: Arp data
@@ -79,15 +81,10 @@ namespace ArpDemo
             buffer[14 + 26] = ipTarget[2];
             buffer[14 + 27] = ipTarget[3];
 
-            string macAsText = currentInterface.GetPhysicalAddress().ToString();
-            for (int i = macAsText.Length - 2; i >= 2; i -= 2)
-                macAsText = macAsText.Insert(i, ":");
-
-
             Packet pkt = new Packet(buffer, DateTime.Now, DataLinkKind.Ethernet);
 
             PacketCommunicator connection = device.Open(65536, PacketDeviceOpenAttributes.None, 100);
-            connection.SetFilter($"arp and ether dst {macAsText} and src host {targetAddress}");
+            connection.SetFilter($"arp and ether dst {device.GetMacAddress()} and src host {targetAddress}");
             connection.SendPacket(pkt);
 
             Stopwatch watch = Stopwatch.StartNew();
