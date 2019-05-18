@@ -24,12 +24,12 @@ namespace ArpDemo
 
             /***** ETHERNET *****/
             // Destination MAC address
-            buffer[0] = byte.MaxValue;
-            buffer[1] = byte.MaxValue;
-            buffer[2] = byte.MaxValue;
-            buffer[3] = byte.MaxValue;
-            buffer[4] = byte.MaxValue;
-            buffer[5] = byte.MaxValue;
+            buffer[0] = 255;
+            buffer[1] = 255;
+            buffer[2] = 255;
+            buffer[3] = 255;
+            buffer[4] = 255;
+            buffer[5] = 255;
 
             //Source MAC address
             buffer[6] = mac[0];
@@ -69,12 +69,12 @@ namespace ArpDemo
             buffer[14 + 16] = ipSender[2];
             buffer[14 + 17] = ipSender[3];
             // Target hardware address
-            buffer[14 + 18] = byte.MaxValue;
-            buffer[14 + 19] = byte.MaxValue;
-            buffer[14 + 20] = byte.MaxValue;
-            buffer[14 + 21] = byte.MaxValue;
-            buffer[14 + 22] = byte.MaxValue;
-            buffer[14 + 23] = byte.MaxValue;
+            buffer[14 + 18] = 255;
+            buffer[14 + 19] = 255;
+            buffer[14 + 20] = 255;
+            buffer[14 + 21] = 255;
+            buffer[14 + 22] = 255;
+            buffer[14 + 23] = 255;
             // Target protocol address
             buffer[14 + 24] = ipTarget[0];
             buffer[14 + 25] = ipTarget[1];

@@ -11,34 +11,39 @@ namespace ArpDemo
 
             Console.Clear();
 
-            Console.Write("IP Adresse: ");
+            Console.Write("IP Address: ");
             string ipTargetInput = Console.ReadLine();
             string macTarget = NetHelper.GetMacAddress(device, ipTargetInput);
 
             Console.WriteLine(macTarget);
+            Console.WriteLine();
+            Console.Write("Press Enter to exit");
             Console.ReadLine();
         }
 
         static LivePacketDevice GetActivePacketDevice()
         {
-            if (LivePacketDevice.AllLocalMachine.Count == 1)
-                return LivePacketDevice.AllLocalMachine[0];
+            var interfaces = LivePacketDevice.AllLocalMachine;
+
+            if (interfaces.Count == 1)
+                return interfaces[0];
 
             string input;
             int result;
             do
             {
                 Console.Clear();
-                for (int i = 0; i < LivePacketDevice.AllLocalMachine.Count; i++)
+                for (int i = 0; i < interfaces.Count; i++)
                 {
-                    Console.WriteLine("[" + (i + 1) + "]: " + LivePacketDevice.AllLocalMachine[i].Description);
+                    Console.WriteLine("[" + (i + 1) + "]: " + interfaces[i].Description);
                 }
 
+                Console.Write("Choose an index: ");
                 input = Console.ReadLine();
             }
-            while (!int.TryParse(input, out result) || --result >= LivePacketDevice.AllLocalMachine.Count);
+            while (!int.TryParse(input, out result) || --result >= interfaces.Count);
 
-            return LivePacketDevice.AllLocalMachine[result];
+            return interfaces[result];
         }
     }
 }
